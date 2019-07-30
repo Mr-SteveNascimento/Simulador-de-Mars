@@ -4,7 +4,6 @@
 # CACHE de 192 bytes (96 Linhas de 8 bits)
 import time
 		
-
 def main():
 
 	print("..................Bem Vindo ao Simulador de memória CACHE..................")
@@ -117,20 +116,28 @@ def conversorDeInstrucoes(lista):
 	return(lista)
 
 def calculo(REG,CACHE,INSTRUCOES):
+
 	resultados = REG
 	imprimirMatriz(REG,INSTRUCOES)
+	# Variável que define desvio de código
 	branch = 0
+	# Variável do laço
 	i = 0
+	# Variável para identificar o laço inicial para o u.sleep()
 	laco = 0
-	REG[0][1] = "5"
-	REG[0][0] = "1"
+
 	while (i < len(INSTRUCOES)):
+
+		# Verifica se é o laço inicial para demorar um pouco mais
 		if (laco == 0):
 			time.sleep(10)
 			laco = 1
 		else:
 			time.sleep(3)
+
+		# Define a string da instrução sendo executada no laço
 		atual = INSTRUCOES[i]
+		# Identifica nas instruções qual delas está sendo executada
 		INSTRUCOES[i] += "*"
 
 		if (INSTRUCOES[i][0] == " "):
@@ -138,7 +145,7 @@ def calculo(REG,CACHE,INSTRUCOES):
 			INSTRUCOES[i] = INSTRUCOES[i].replace("*", "")
 			print(("{} na linha {}").format(INSTRUCOES[i], i+1))
 			break
-			
+
 		elif (INSTRUCOES[i][:4] == "addi"):
 			resultados = addi(resultados,atual)
 			if (resultados == 0):
@@ -206,13 +213,18 @@ def calculo(REG,CACHE,INSTRUCOES):
 			break
 
 		INSTRUCOES[i] = INSTRUCOES[i].replace("*", "")
+
+		# Verifica se foi requisitado uma branch e para onde será
 		if (branch == 0):
 			i +=1
 		else:
 			i = branch-1
 			branch = 0
 
+	return 0
+
 def add(res,inst):
+
 	try:
 		reg1 = list(inst[4:6])
 		reg2 = list(inst[7:9])
@@ -245,6 +257,7 @@ def add(res,inst):
 	return res
 
 def addi(res,inst):
+
 	try:
 		reg1 = list(inst[5:7])
 		reg2 = list(inst[8:10])
@@ -270,9 +283,11 @@ def addi(res,inst):
 			res[0][int(reg1[1])] = str(valor1)
 		else:
 			res[1][int(reg1[1])] = str(valor1)
-	return res
+
+		return res
 
 def lw(res,cache,inst):
+
 	try:
 		reg1 = list(inst[3:5])
 		imm = 0
@@ -314,9 +329,11 @@ def lw(res,cache,inst):
 				res[0][int(reg1[1])] = str(valor)
 			else:
 				res[1][int(reg1[1])] = str(valor)
+
 			return res
 
 def sw(res,cache,inst):
+
 	try:
 		reg1 = list(inst[3:5])
 		imm = 0
@@ -354,9 +371,11 @@ def sw(res,cache,inst):
 			print("Não existe esta posição de memória!!")
 			return 0
 		else:
+
 			return res
 
 def j(inst,INSTRUCOES):
+
 	control = 0
 	branch = 0
 	for i in range(len(INSTRUCOES)):
@@ -366,9 +385,11 @@ def j(inst,INSTRUCOES):
 	if (control == 0):
 		return ("Erro")
 	else:
+
 		return (branch)
 
 def bne(inst,res,INSTRUCOES):
+
 	try:
 		reg1 = list(inst[4:6])
 		reg2 = list(inst[7:9])
@@ -399,9 +420,11 @@ def bne(inst,res,INSTRUCOES):
 			else:
 				return (branch)
 		else:
+
 			return 0
 
 def beq(inst,res,INSTRUCOES):
+
 	try:
 		reg1 = list(inst[4:6])
 		reg2 = list(inst[7:9])
@@ -432,6 +455,7 @@ def beq(inst,res,INSTRUCOES):
 			else:
 				return (branch)
 		else:
+
 			return 0
 
 main()
