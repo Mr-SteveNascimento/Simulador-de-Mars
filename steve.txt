@@ -1,7 +1,14 @@
-
-
-LABEL: 
-add $3,$0,$3
-beq $3,$1,EXIT
-j LABEL
+addi t0,t0,3
+addi t1,t1,1
+LABEL:
+add $0,t1,$0
+bne $0,t0,LABEL
+j EXIT
+add t0,t1,t2
 EXIT:
+sw t1,0(t0)
+lw $6,0(t0)
+addi $7,$7,30
+sw t0,0($7)
+lw t9,0($7)
+lw t9,0($2)

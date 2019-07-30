@@ -92,7 +92,7 @@ def imprimirMatriz(res,inst):
 	print("     INSTRUÇÕES")
 	print()
 	for i in range(len(inst)):
-		print(("     {}").format(inst[i]))
+		print(("{}-     {}").format(i+1,inst[i]))
 	print()
 	print()
 	print("*********************************************************************")
@@ -130,10 +130,10 @@ def calculo(REG,CACHE,INSTRUCOES):
 
 		# Verifica se é o laço inicial para demorar um pouco mais
 		if (laco == 0):
-			time.sleep(10)
+			time.sleep(5)
 			laco = 1
 		else:
-			time.sleep(3)
+			time.sleep(1)
 
 		# Define a string da instrução sendo executada no laço
 		atual = INSTRUCOES[i]
@@ -149,24 +149,32 @@ def calculo(REG,CACHE,INSTRUCOES):
 		elif (INSTRUCOES[i][:4] == "addi"):
 			resultados = addi(resultados,atual)
 			if (resultados == 0):
+				print("Erro na seguinte linha de código:")
+				print(("{} na linha {}").format(atual, i+1))
 				break
 			imprimirMatriz(resultados,INSTRUCOES)
 
 		elif (INSTRUCOES[i][:3] == 'add'):
 			resultados = add(resultados,atual)
 			if (resultados == 0):
+				print("Erro na seguinte linha de código:")
+				print(("{} na linha {}").format(atual, i+1))
 				break
 			imprimirMatriz(resultados,INSTRUCOES)
 
 		elif (INSTRUCOES[i][:2] == "lw"):
 			resultados = lw(resultados,CACHE,atual)
 			if (resultados == 0):
+				print("Erro na seguinte linha de código:")
+				print(("{} na linha {}").format(atual, i+1))
 				break
 			imprimirMatriz(resultados,INSTRUCOES)
 
 		elif (INSTRUCOES[i][:2] == "sw"):
 			resultados = sw(resultados,CACHE,atual)
 			if (resultados == 0):
+				print("Erro na seguinte linha de código:")
+				print(("{} na linha {}").format(atual, i+1))
 				break
 			imprimirMatriz(resultados,INSTRUCOES)
 
@@ -180,8 +188,8 @@ def calculo(REG,CACHE,INSTRUCOES):
 			INSTRUCOES[i] = INSTRUCOES[i].replace("*", "")
 			branch = j(atual,INSTRUCOES)
 			if (branch == "Erro"):
-				print("Seu jumper não funcionou, verifique se o label está correto!!!")
-				print(("{} na linha {}").format(INSTRUCOES[i], i+1))
+				print("Erro na seguinte linha de código:")
+				print(("{} na linha {}").format(atual, i+1))
 				break
 			INSTRUCOES[i] += "*"
 			imprimirMatriz(resultados,INSTRUCOES)
@@ -190,8 +198,8 @@ def calculo(REG,CACHE,INSTRUCOES):
 			INSTRUCOES[i] = INSTRUCOES[i].replace("*", "")
 			branch = bne(atual,resultados,INSTRUCOES)
 			if (branch == "Erro"):
-				print("Seu branch if not equals não funcionou, verifique se o label está correto!!!")
-				print(("{} na linha {}").format(INSTRUCOES[i], i+1))
+				print("Erro na seguinte linha de código:")
+				print(("{} na linha {}").format(atual, i+1))
 				break
 			INSTRUCOES[i] += "*"
 			imprimirMatriz(resultados,INSTRUCOES)
@@ -200,8 +208,8 @@ def calculo(REG,CACHE,INSTRUCOES):
 			INSTRUCOES[i] = INSTRUCOES[i].replace("*", "")
 			branch = beq(atual,resultados,INSTRUCOES)
 			if (branch == "Erro"):
-				print("Seu branch if equals não funcionou, verifique se o label está correto!!!")
-				print(("{} na linha {}").format(INSTRUCOES[i], i+1))
+				print("Erro na seguinte linha de código:")
+				print(("{} na linha {}").format(atual, i+1))
 				break
 			INSTRUCOES[i] += "*"
 			imprimirMatriz(resultados,INSTRUCOES)
@@ -234,27 +242,34 @@ def add(res,inst):
 		valor3 = 0
 		if (reg1[0] == "$"):
 			valor1 = int(res[0][int(reg1[1])])
-		else:
+		elif(reg1[0] == "t"):
 			valor1 = int(res[1][int(reg1[1])])
+		else:
+			return 0
 		if (reg2[0] == "$"):
 			valor2 = int(res[0][int(reg2[1])])
-		else:
+		elif(reg2[0] == "t"):
 			valor2 = int(res[1][int(reg2[1])])
+		else:
+			return 0
 		if (reg3[0] == "$"):
 			valor3 = int(res[0][int(reg3[1])])
-		else:
+		elif(reg3[0] == "t"):
 			valor3 = int(res[1][int(reg3[1])])
+		else:
+			return 0
 	except:
-		print("Erro de formatação na instrução add!! (Verifique se há algum espaço no final)")
 		return 0
 	else:
 		valor1 = valor2 + valor3
 		if (reg1[0] == "$"):
 			res[0][int(reg1[1])] = str(valor1)
-		else:
+		elif(reg1[0] == "t"):
 			res[1][int(reg1[1])] = str(valor1)
+		else:
+			return 0
 
-	return res
+		return res
 
 def addi(res,inst):
 
@@ -267,22 +282,27 @@ def addi(res,inst):
 		valor3 = 0
 		if (reg1[0] == "$"):
 			valor1 = int(res[0][int(reg1[1])])
-		else:
+		elif(reg1[0] == "t"):
 			valor1 = int(res[1][int(reg1[1])])
+		else:
+			return 0
 		if (reg2[0] == "$"):
 			valor2 = int(res[0][int(reg2[1])])
-		else:
+		elif(reg2[0] == "t"):
 			valor2 = int(res[1][int(reg2[1])])
+		else:
+			return 0
 		valor3 = int(reg3)
 	except:
-		print("Erro de formatação da instrução addi!! (Verifique se há algum espaço no final)")
 		return 0
 	else:
 		valor1 = valor2 + valor3
 		if (reg1[0] == "$"):
 			res[0][int(reg1[1])] = str(valor1)
-		else:
+		elif(reg1[0] == "t"):
 			res[1][int(reg1[1])] = str(valor1)
+		else:
+			return 0
 
 		return res
 
@@ -296,8 +316,10 @@ def lw(res,cache,inst):
 		valor1 = 0
 		if (reg1[0] == "$"):
 			valor1 = int(res[0][int(reg1[1])])
-		else:
+		elif(reg1[0] == "t"):
 			valor1 = int(res[1][int(reg1[1])])
+		else:
+			return 0
 		if (len(resto) == 5):
 			imm == int(inst[6])
 			reg2.append(inst[8:10])
@@ -305,30 +327,31 @@ def lw(res,cache,inst):
 			imm == int(inst[6:8])
 			reg2.append(inst[10:12])
 		else:
-			print("Erro de formatação do lw, verifique se existe este endereço na CACHE ou se há espaço no final da instrução!")
 			return 0
 		reg2 = list(reg2[0])
 	except:
-		print("Erro de formatação do lw, verifique os espaços!")
 		return 0
 	else:
 		valor2 = 0
 		if (reg2[0] == "$"):
 			valor2 = int(res[0][int(reg2[1])])
-		else:
+		elif(reg2[0] == "t"):
 			valor2 = int(res[1][int(reg2[1])])
+		else:
+			return 0
 
 		try:
 			valor3 = valor2 + imm
 			valor = cache[valor3-1]
 		except:
-			print("Não existe esta posição de memória!!")
 			return 0
 		else:
 			if (reg1[0] == "$"):
 				res[0][int(reg1[1])] = str(valor)
-			else:
+			elif(reg1[0] == "t"):
 				res[1][int(reg1[1])] = str(valor)
+			else:
+				return 0
 
 			return res
 
@@ -342,8 +365,10 @@ def sw(res,cache,inst):
 		valor1 = 0
 		if (reg1[0] == "$"):
 			valor1 = int(res[0][int(reg1[1])])
-		else:
+		elif(reg1[0] == "t"):
 			valor1 = int(res[1][int(reg1[1])])
+		else:
+			return 0 
 		if (len(resto) == 5):
 			imm == int(inst[6])
 			reg2.append(inst[8:10])
@@ -357,11 +382,11 @@ def sw(res,cache,inst):
 		valor2 = 0
 		if (reg2[0] == "$"):
 			valor2 = int(res[0][int(reg2[1])])
-		else:
+		elif(reg2[0] == "t"):
 			valor2 = int(res[1][int(reg2[1])])
-
+		else:
+			return 0
 	except:
-		print("Erro de formatação do lw, verifique os espaços!")
 		return 0
 	else:
 		try:
@@ -398,12 +423,16 @@ def bne(inst,res,INSTRUCOES):
 		valor2 = 0
 		if (reg1[0] == "$"):
 			valor1 = int(res[0][int(reg1[1])])
-		else:
+		elif(reg1[0] == "t"):
 			valor1 = int(res[1][int(reg1[1])])
+		else:
+			return("Erro")
 		if (reg2[0] == "$"):
 			valor2 = int(res[0][int(reg2[1])])
-		else:
+		elif(reg2[0] == "t"):
 			valor2 = int(res[1][int(reg2[1])])
+		else:
+			return("Erro")
 	except:
 		print("Erro de formatação na instrução bne!! (verifique os espaços)")
 		return("Erro")
@@ -433,12 +462,16 @@ def beq(inst,res,INSTRUCOES):
 		valor2 = 0
 		if (reg1[0] == "$"):
 			valor1 = int(res[0][int(reg1[1])])
-		else:
+		elif(reg1[0] == "t"):
 			valor1 = int(res[1][int(reg1[1])])
+		else:
+			return("Erro")
 		if (reg2[0] == "$"):
 			valor2 = int(res[0][int(reg2[1])])
-		else:
+		elif(reg2[0] == "t"):
 			valor2 = int(res[1][int(reg2[1])])
+		else:
+			return("Erro")
 	except:
 		print("Erro de formatação na instrução bne!! (verifique os espaços)")
 		return("Erro")
