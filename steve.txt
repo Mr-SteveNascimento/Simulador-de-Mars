@@ -1,12 +1,7 @@
 
-add
-werfvwerfwef
-wefewfcwef
-wefewfewf
-wefewfew
-ewfewfwefewf
-efewfewfew
-wefwefwefwe
-fewfwefwefew
-ewfwefwef
 
+LABEL: 
+add $3,$0,$3
+beq $3,$1,EXIT
+j LABEL
+EXIT:
